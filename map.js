@@ -1,3 +1,5 @@
+function mapFunctions(labelsResult, pointsToPlot){
+
 //initialize
 var data = []
 var y_coord = 0;
@@ -58,6 +60,33 @@ function coordFromPixels(x_coord, y_coord) { //_coord=Pix
     var yKoord = yScale.invert(y_coord);
     return {x: xKoord, y: yKoord};
 }
+
+//fetching points according to current zoom level (out of all points)
+function getAverages(currentZoomLevel) {
+    var sums = {};
+    for (var i = 0; i < n; i++) {
+      var label =
+        labelsResult[
+          i + n * (zoomLevels - 5 - Math.round(currentZoomLevel))
+        ];
+      var point = pointsToPlot[i];
+      if (!sums[label]) {
+        sums[label] = { x: 0, y: 0, count: 0 };
+      }
+      sums[label].x += point.x;
+      sums[label].y += point.y;
+      sums[label].count++;
+    }
+    var averages = [];
+    for (var label in sums) {
+      averages.push({
+        x: sums[label].x / sums[label].count,
+        y: sums[label].y / sums[label].count,
+      });
+    }
+
+    return averages;
+  }
 
 // ##### scaling functions for axis ####
 
@@ -182,6 +211,26 @@ function handleZoom(event) {
     svg.selectAll("circle")
         .attr('cx', function(d) {return newX(d[1])})
         .attr('cy', function(d) {return newY(d[2])});
+    
+        let averages = getAverages(currentZoomLevel);
+
+        var circles = svg.selectAll("circle").data(averages);
+        console.log(averages);
+
+        circles.exit().remove();
+
+        circles
+          .enter()
+          .append("circle")
+          .attr("r", 5)
+          .merge(circles)
+          .attr("cx", function (d) {
+            return xScale(d.x);
+          })
+          .attr("cy", function (d) {
+            return yScale(d.y);
+          })
+          .attr("transform", d3.event.transform);
 }
 
 // Append a new SVG element to the existing SVG
@@ -312,3 +361,4 @@ var button_reset = button_reset_embed.append('xhtml:button')
     
 // Attach the zoom behavior to the SVG element
 svg.call(zoom);
+}

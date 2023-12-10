@@ -2,8 +2,10 @@
 <html lang="en">
 
 <head>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
     <title>Data Visualizer</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="build/clustering.js"></script>
+    <script src="map.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
@@ -199,9 +201,57 @@ button#addFunctionButton:hover{
         }
 
         function initializeMap() {
-            var script = document.createElement('script');
-            script.src = 'map.js';
-            document.head.appendChild(script);
+            console.log("Starting Clustering Program");
+            var pointsToPlot = [];
+            var n = 20;
+            var zoomLevels;
+            var 
+
+            Module.onRuntimeInitialized = function() {
+                console.log("Module loaded");
+                dim = 2;
+                zoomLevels = 10;
+                maxIterations = 5;
+                
+                points = new Int32Array(n*dim);
+                
+                for (let i = 0; i < n*dim; i++) {
+                    points[i] = Math.random() * 501;
+                }
+                
+                console.log(points);
+                
+                let pointsBuf = Module._malloc(n * dim * Int32Array.BYTES_PER_ELEMENT);
+                let distMatBuf = Module._malloc(((n*(n-1))/2) * Float64Array.BYTES_PER_ELEMENT);
+                let heightBuf = Module._malloc((n-1) * Float64Array.BYTES_PER_ELEMENT);
+                let mergeBuf = Module._malloc(2*(n-1) * Int32Array.BYTES_PER_ELEMENT);
+                let labelsBuf = Module._malloc(n * zoomLevels * Int32Array.BYTES_PER_ELEMENT);
+                
+                Module.HEAP32.set(points, pointsBuf / points.BYTES_PER_ELEMENT);
+                
+                Module.ccall("clusterPoints", null, ["number", "number", "number", "number", "number", "number", "number", "number", "number"], [pointsBuf, dim, distMatBuf, heightBuf, mergeBuf, labelsBuf, n, maxIterations, zoomLevels])
+                
+                var labelsResult = new Int32Array(Module.HEAP32.subarray( labelsBuf / Int32Array.BYTES_PER_ELEMENT, labelsBuf / Int32Array.BYTES_PER_ELEMENT + n*zoomLevels))
+                var pointsResult = new Int32Array(Module.HEAP32.subarray( pointsBuf / Int32Array.BYTES_PER_ELEMENT, pointsBuf / Int32Array.BYTES_PER_ELEMENT + n*dim))
+                
+                for (var i = 0; i < n*2; i += 2) {
+                    pointsToPlot.push({x: pointsResult[i], y: pointsResult[i+1]});
+                }
+                
+                console.log(labelsResult);
+                Module._free(pointsBuf);
+                Module._free(distMatBuf);
+                Module._free(heightBuf);
+                Module._free(mergeBuf);
+                Module._free(labelsBuf);
+                
+                console.log(pointsToPlot);
+                
+                mapFunctions(labelsResult, pointsToPlot);
+            };
+            //var script = document.createElement('script');
+            //script.src = 'map.js';
+            //document.head.appendChild(script);
         }
     </script>
     
