@@ -1,4 +1,4 @@
-function mapFunctions(labelsResult, pointsToPlot){
+function mapFunctions(labelsResult, pointsToPlot, n){
 
 //initialize
 var data = []
@@ -225,12 +225,12 @@ function handleZoom(event) {
           .attr("r", 5)
           .merge(circles)
           .attr("cx", function (d) {
-            return xScale(d.x);
+            return (d.x);
           })
           .attr("cy", function (d) {
-            return yScale(d.y);
+            return (d.y);
           })
-          .attr("transform", d3.event.transform);
+          .attr("transform", event.transform);
 }
 
 // Append a new SVG element to the existing SVG

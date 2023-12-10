@@ -204,10 +204,9 @@ button#addFunctionButton:hover{
             console.log("Starting Clustering Program");
             var pointsToPlot = [];
             var n = 20;
-            var zoomLevels;
-            var 
+            //var zoomLevels;
 
-            Module.onRuntimeInitialized = function() {
+            
                 console.log("Module loaded");
                 dim = 2;
                 zoomLevels = 10;
@@ -247,12 +246,12 @@ button#addFunctionButton:hover{
                 
                 console.log(pointsToPlot);
                 
-                mapFunctions(labelsResult, pointsToPlot);
+                mapFunctions(labelsResult, pointsToPlot, n);
             };
             //var script = document.createElement('script');
             //script.src = 'map.js';
             //document.head.appendChild(script);
-        }
+        
     </script>
     
 </body>
