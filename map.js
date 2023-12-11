@@ -1,5 +1,7 @@
 function mapFunctions(labelsResult, pointsToPlot, n){
 
+//minor change
+
 //initialize
 var data = []
 var y_coord = 0;
