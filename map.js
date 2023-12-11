@@ -1,5 +1,7 @@
 function mapFunctions(labelsResult, pointsToPlot, n){
 
+//minor change
+
 //initialize
 var data = []
 var y_coord = 0;
@@ -210,8 +212,8 @@ function handleZoom(event) {
 
     // gives and draws new position of drawn circles
     svg.selectAll("circle")
-        .attr('cx', function(d) {return newX(d[1])})
-        .attr('cy', function(d) {return newY(d[2])});
+        //.attr('cx', function(d) {return newX(d[1])})
+        //.attr('cy', function(d) {return newY(d[2])});
     
         let averages = getAverages(currentZoomLevel);
 
