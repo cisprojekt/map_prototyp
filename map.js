@@ -82,7 +82,8 @@ function getAverages(currentZoomLevel) {
       averages.push({
         x: sums[label].x / sums[label].count,
         y: sums[label].y / sums[label].count,
-      });
+        r: sums[label].count,
+        });
     }
 
     return averages;
@@ -222,7 +223,9 @@ function handleZoom(event) {
         circles
           .enter()
           .append("circle")
-          .attr("r", 5)
+          .attr("r", function(d){
+            return(d.r*2);
+          })
           .merge(circles)
           .attr("cx", function (d) {
             return (d.x);
