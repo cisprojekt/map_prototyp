@@ -1,5 +1,7 @@
 function mapFunctions(labelsResult, pointsToPlot, n){
 
+//minor change
+
 //initialize
 var data = []
 var y_coord = 0;
@@ -82,7 +84,8 @@ function getAverages(currentZoomLevel) {
       averages.push({
         x: sums[label].x / sums[label].count,
         y: sums[label].y / sums[label].count,
-      });
+        r: sums[label].count,
+        });
     }
 
     return averages;
@@ -209,8 +212,8 @@ function handleZoom(event) {
 
     // gives and draws new position of drawn circles
     svg.selectAll("circle")
-        .attr('cx', function(d) {return newX(d[1])})
-        .attr('cy', function(d) {return newY(d[2])});
+        //.attr('cx', function(d) {return newX(d[1])})
+        //.attr('cy', function(d) {return newY(d[2])});
     
         let averages = getAverages(currentZoomLevel);
 
@@ -222,7 +225,9 @@ function handleZoom(event) {
         circles
           .enter()
           .append("circle")
-          .attr("r", 5)
+          .attr("r", function(d){
+            return(d.r*2);
+          })
           .merge(circles)
           .attr("cx", function (d) {
             return (d.x);
