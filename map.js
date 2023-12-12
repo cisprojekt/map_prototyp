@@ -226,7 +226,7 @@ function handleZoom(event) {
           .enter()
           .append("circle")
           .attr("r", function(d){
-            return(d.r*2);
+            return(d.r*1,5);
           })
           .merge(circles)
           .attr("cx", function (d) {
