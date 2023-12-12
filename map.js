@@ -225,10 +225,10 @@ function handleZoom(event) {
         circles
           .enter()
           .append("circle")
+          .merge(circles)
           .attr("r", function(d){
             return(d.r*1,5);
           })
-          .merge(circles)
           .attr("cx", function (d) {
             return (d.x);
           })
