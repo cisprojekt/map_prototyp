@@ -343,7 +343,7 @@ var InfoScaling_Y_Text = infoScalingY.append("text")
 var button_reset_embed = svg.append('foreignObject')
     .attr('x', width-200)
     .attr('y', height-60)
-    .attr('width', 100)
+    .attr('width', 200)
     .attr('height', 60)
     .style("opacity", 0.9);
 
