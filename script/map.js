@@ -341,8 +341,8 @@ var InfoScaling_Y_Text = infoScalingY.append("text")
 
 //create html button element and append it to svg
 var button_reset_embed = svg.append('foreignObject')
-    .attr('x', width/2-50)
-    .attr('y', height-30)
+    .attr('x', width)
+    .attr('y', height)
     .attr('width', 100)
     .attr('height', 60)
     .style("opacity", 0.9);
