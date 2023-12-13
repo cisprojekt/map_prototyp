@@ -1,7 +1,3 @@
-function mapFunctions(labelsResult, pointsToPlot, n){
-
-//minor change
-
 //initialize
 var data = []
 var y_coord = 0;
@@ -50,7 +46,7 @@ function generate_x(){
 }
 
 //fill data array
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 1000; i++) {
     y_coord = generate_y();
     x_coord = generate_x();
     data.push([i, x_coord, y_coord]);
@@ -62,34 +58,6 @@ function coordFromPixels(x_coord, y_coord) { //_coord=Pix
     var yKoord = yScale.invert(y_coord);
     return {x: xKoord, y: yKoord};
 }
-
-//fetching points according to current zoom level (out of all points)
-function getAverages(currentZoomLevel) {
-    var sums = {};
-    for (var i = 0; i < n; i++) {
-      var label =
-        labelsResult[
-          i + n * (zoomLevels - 5 - Math.round(currentZoomLevel))
-        ];
-      var point = pointsToPlot[i];
-      if (!sums[label]) {
-        sums[label] = { x: 0, y: 0, count: 0 };
-      }
-      sums[label].x += point.x;
-      sums[label].y += point.y;
-      sums[label].count++;
-    }
-    var averages = [];
-    for (var label in sums) {
-      averages.push({
-        x: sums[label].x / sums[label].count,
-        y: sums[label].y / sums[label].count,
-        r: sums[label].count,
-        });
-    }
-
-    return averages;
-  }
 
 // ##### scaling functions for axis ####
 
@@ -135,8 +103,7 @@ var yAxis = svg.append("g")
 // supplemented with infos from https://chartio.com/resources/tutorials/how-to-show-data-on-mouseover-in-d3js/
 var tooltip_svg = d3.select("#my_dataviz").append("svg")
     .attr("width", 50)
-    .attr("height", 50)
-    //.style("pointer-events", "none"); // deactivates the possiblity to interact with the svg at all; doesnt work
+    .attr("height", 50);
 
 var tooltip = d3.select("#chartContainer")
     .append("div")
@@ -146,7 +113,7 @@ var tooltip = d3.select("#chartContainer")
     .style("border", "solid")
     .style("border-width", "1px")
     .style("border-radius", "5px")
-    .style("padding", "0px")
+    .style("padding", "10px")
     .style("position", "absolute");
 
 // Add dots to plot 
@@ -158,19 +125,19 @@ svg.selectAll("circle")
         .attr("cy", function(d) {return y(d[2]); }) //function y determines the linear scaling factor relativ to the y-axis as defined above
         .attr("r", 5)
         .style("fill", "#0000ff") 
-        .style("fill-opacity", 0.5)
+        .style("fill-opacity", 0.4)
         .on("mouseover", function(event, d) {
         // A function that change this tooltip when the user hover a point.
         // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
             console.log(event)
             tooltip.transition()
-                .duration(0)
+                .duration(1)
                 .style("opacity", 0.9)
             tooltip.html("x: " + (d[1]).toFixed(3) + " y: " + (d[2]).toFixed(3))
                 .style("left", (event.pageX) + "px")
                 .style("top", (event.pageY - 28) + "px");
             tooltip.transition()
-                .duration(2500)
+                .duration(5000)
                 .style("opacity", 0)
         })
         /* .on("mouseleave", function(event) {
@@ -212,30 +179,8 @@ function handleZoom(event) {
 
     // gives and draws new position of drawn circles
     svg.selectAll("circle")
-        //.attr('cx', function(d) {return newX(d[1])})
-        //.attr('cy', function(d) {return newY(d[2])});
-    
-        let averages = getAverages(currentZoomLevel);
-
-        var circles = svg.selectAll("circle").data(averages);
-        console.log(averages);
-
-        circles.exit().remove();
-
-        circles
-          .enter()
-          .append("circle")
-          .attr("r", function(d){
-            return(d.r*2);
-          })
-          .merge(circles)
-          .attr("cx", function (d) {
-            return (d.x);
-          })
-          .attr("cy", function (d) {
-            return (d.y);
-          })
-          .attr("transform", event.transform);
+        .attr('cx', function(d) {return newX(d[1])})
+        .attr('cy', function(d) {return newY(d[2])});
 }
 
 // Append a new SVG element to the existing SVG
@@ -340,15 +285,15 @@ var InfoScaling_Y_Text = infoScalingY.append("text")
 
 //create html button element and append it to svg
 var button_reset_embed = svg.append('foreignObject')
-    .attr('x', width - 100)
-    .attr('y', height - 60)
-    .attr('width', 100)
+    .attr('x', width - 140)
+    .attr('y', height - 40)
+    .attr('width', 150)
     .attr('height', 60)
     .style("opacity", 0.9);
 
 //append reset button to embedding for button
 var button_reset = button_reset_embed.append('xhtml:button')
-    .text('Reset View')
+    .text('Reset Coordinates')
     .style('color', 'white')
     .style('background-color', '#0080ff')
     .on('mouseover', function() {
@@ -366,4 +311,3 @@ var button_reset = button_reset_embed.append('xhtml:button')
     
 // Attach the zoom behavior to the SVG element
 svg.call(zoom);
-}
