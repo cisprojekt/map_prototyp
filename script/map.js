@@ -96,12 +96,12 @@ function getAverages(currentZoomLevel) {
 // Declare the y (vertical position) scale.
 const y = d3.scaleLinear()
     .domain([-y_max, y_max]) //initial domain shown on y axis [0,...]
-    .range([0, y_axis_width]); // //length of axis in pixel on reference svg
+    .range([-y_axis_width, y_axis_width]); // //length of axis in pixel on reference svg
 
 // Declare the x (horizontal position) scale.
 const x = d3.scaleLinear()
     .domain([-x_max, x_max]) //initial domain shown on x axis [0,...]
-    .range([0, x_axis_width]); //length of axis in pixel on reference svg
+    .range([-x_axis_width, x_axis_width]); //length of axis in pixel on reference svg
 
 // #### remaining code: creating svgs and handeling zoom ####
 
@@ -342,7 +342,7 @@ var InfoScaling_Y_Text = infoScalingY.append("text")
 //create html button element and append it to svg
 var button_reset_embed = svg.append('foreignObject')
     .attr('x', width-100)
-    .attr('y', height-60)
+    .attr('y', height-120)
     .attr('width', 100)
     .attr('height', 60)
     .style("opacity", 0.9);
