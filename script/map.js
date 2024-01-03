@@ -150,7 +150,8 @@ var tooltip = d3.select("#chartContainer")
     .style("position", "absolute");
 
 // Add dots to plot 
-svg.selectAll("circle")
+
+/*svg.selectAll("circle") //not needed because in Zoom handler new points get generated
     .data(getAverages(1))
     .enter()
     .append("circle")
@@ -214,7 +215,7 @@ function handleZoom(event) {
     svg.selectAll("circle")
         //.attr('cx', function(d) {return newX(d[1])})
         //.attr('cy', function(d) {return newY(d[2])});
-    
+        
         let averages = getAverages(currentZoomLevel);
 
         var circles = svg.selectAll("circle").data(averages);
@@ -236,6 +237,22 @@ function handleZoom(event) {
           .attr("cy", function (d) {
             return (d.y);
           })
+          .style("fill", "#0000ff") 
+          .style("fill-opacity", 0.5)
+          .on("mouseover", function(event, d) {
+        // A function that change this tooltip when the user hover a point.                  !!! does not currently work, just copy and paced
+        // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
+            console.log(event)
+            tooltip.transition()
+                .duration(0)
+                .style("opacity", 0.9)
+            tooltip.html("x: " + (d[1]).toFixed(3) + " y: " + (d[2]).toFixed(3))
+                .style("left", (event.pageX) + "px")
+                .style("top", (event.pageY - 28) + "px");
+            tooltip.transition()
+                .duration(2500)
+                .style("opacity", 0)
+        })
           .attr("transform", event.transform);
 }
 
